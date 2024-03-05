@@ -5,7 +5,7 @@ use axum::{
 
 use crate::controllers;
 
-pub fn routes() -> Router {
+pub fn route() -> Router {
     Router::new()
         .route("/", get(|| async { "Hello, Rust!" }))
         .route("/create-user", post(controllers::create_user))
