@@ -3,10 +3,10 @@
 mod routes;
 mod controllers;
 mod models;
+mod configs;
 
-use axum::
-    Server
-;
+use axum::Server;
+
 
 #[tokio::main]
 async fn main() {
@@ -16,7 +16,8 @@ async fn main() {
     println!("Running on http://localhost:3000");
     
     // Start Server
-    Server::bind(&"127.0.0.1:3000".parse().unwrap())
+    let config = configs::load_config();
+    Server::bind(&config.server_address.parse().unwrap())
         .serve(app.into_make_service())
         .await
         .unwrap();
