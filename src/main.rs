@@ -3,8 +3,6 @@ mod controllers;
 mod models;
 mod configs;
 
-use axum::Server;
-
 
 #[tokio::main]
 async fn main() {
@@ -14,8 +12,6 @@ async fn main() {
     // Start Server
     let config = configs::load_config();
     println!("Running on {}",&config.server_address);
-    Server::bind(&config.server_address.parse().unwrap())
-        .serve(app.into_make_service())
-        .await
-        .unwrap();
+    let listener = tokio::net::TcpListener::bind(&config.server_address).await.unwrap();
+    axum::serve(listener, app).await.unwrap();
 }
