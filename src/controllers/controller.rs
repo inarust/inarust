@@ -1,12 +1,29 @@
+use std::sync::Arc;
+
 use axum::{
     body::Body,
     http::StatusCode,
     response::{IntoResponse, Response},
-    extract::{Path, Query},
+    extract::{Path, Query,Extension},
     Json,
 };
-
+use mongodb::{Client,Collection, bson::Document,bson::doc};
 use crate::models::{User,Page,Userx, Item};
+
+pub async fn get_users(Extension(arc_client): Extension<Arc<Client>>)-> impl IntoResponse {
+    let db = arc_client.database("mydatabase");
+    let collection:Collection<Document> = db.collection("mycollection");
+    let filter = doc! { "name": "John Doe" };
+    let result = collection.find_one(filter, None).await.unwrap();
+
+    if let Some(doc) = result {
+        format!("Found document: {:?}", doc)
+    } else {
+        "Document not found".to_string()
+    }
+
+}
+
 // Handler for /create-user
 pub async fn create_user() -> impl IntoResponse {
     Response::builder()
