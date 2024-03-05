@@ -12,11 +12,10 @@ use axum::Server;
 async fn main() {
     // Define Routes
     let app = routes::route();
-
-    println!("Running on http://localhost:3000");
-    
+  
     // Start Server
     let config = configs::load_config();
+    println!("Running on {}",&config.server_address);
     Server::bind(&config.server_address.parse().unwrap())
         .serve(app.into_make_service())
         .await
