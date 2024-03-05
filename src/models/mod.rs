@@ -1,3 +1,3 @@
-mod user_model;
+mod model;
 
-pub use user_model::*;
+pub use model::*;

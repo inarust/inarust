@@ -1,3 +1,3 @@
-mod user_controller;
+mod controller;
 
-pub use user_controller::*;
+pub use controller::*;

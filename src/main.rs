@@ -11,7 +11,7 @@ use axum::
 #[tokio::main]
 async fn main() {
     // Define Routes
-    let app = routes::user_routes();
+    let app = routes::routes();
 
     println!("Running on http://localhost:3000");
     
