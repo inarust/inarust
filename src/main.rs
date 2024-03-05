@@ -1,5 +1,3 @@
-// main.rs
-
 mod routes;
 mod controllers;
 mod models;
