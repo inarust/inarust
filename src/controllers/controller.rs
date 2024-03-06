@@ -1,5 +1,5 @@
 use std::sync::Arc;
-
+use serde_json::to_string;
 use axum::{
     body::Body,
     http::StatusCode,
@@ -17,9 +17,16 @@ pub async fn get_users(Extension(arc_client): Extension<Arc<Client>>)-> impl Int
     let result = collection.find_one(filter, None).await.unwrap();
 
     if let Some(doc) = result {
-        format!("Found document: {:?}", doc)
+        Response::builder()
+        .status(StatusCode::FOUND)
+        .body(Body::from(to_string(&doc).unwrap()))
+        .unwrap()
+        // format!("Found document: {:?}", doc);
     } else {
-        "Document not found".to_string()
+        Response::builder()
+        .status(StatusCode::NOT_FOUND)
+        .body(Body::from("User not found"))
+        .unwrap()
     }
 
 }
