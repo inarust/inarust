@@ -1,6 +1,20 @@
 # inarust
 
-Inarust Boilerplate
+Inarust Boilerplate, setting environment dahulu
+
+```env
+MONGOSTRINGAWANGGA=mongodb://localhost:27017
+SERVERADDRESS=0.0.0.0:3000
+```
+
+buat db mydatabase dan collection mycollection kemudian isi dengan json :
+
+```json
+{
+  "name": "John Doe",
+  "alamat": "bandung"
+}
+```
 
 test dengan curl
 
