@@ -7,6 +7,13 @@ pub struct User {
     pub email: String,
 }
 
+// the input to our `create_user` handler
+#[derive(Deserialize)]
+pub struct CreateUser {
+    pub username: String,
+    pub email: String,
+}
+
 // A struct for query parameters
 #[derive(Deserialize)]
 pub struct Page {

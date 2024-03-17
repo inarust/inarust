@@ -8,7 +8,7 @@ use axum::{
     Json,
 };
 use mongodb::{Client,Collection, bson::Document,bson::doc};
-use crate::models::{User,Page,Userx, Item};
+use crate::models::{User,Page,Userx, Item,CreateUser};
 
 pub async fn get_users(Extension(arc_client): Extension<Arc<Client>>)-> impl IntoResponse {
     let db = arc_client.database("mydatabase");
@@ -21,7 +21,6 @@ pub async fn get_users(Extension(arc_client): Extension<Arc<Client>>)-> impl Int
         .status(StatusCode::FOUND)
         .body(Body::from(to_string(&doc).unwrap()))
         .unwrap()
-        // format!("Found document: {:?}", doc);
     } else {
         Response::builder()
         .status(StatusCode::NOT_FOUND)
@@ -38,6 +37,17 @@ pub async fn create_user() -> impl IntoResponse {
         .body(Body::from("User created successfully"))
         .unwrap()
 }
+
+// Handler for add new user from json
+pub async fn add_user(Json(payload): Json<CreateUser>) -> (StatusCode, Json<User>) {
+    let user = User {
+        id: 1337,
+        name: payload.username,
+        email: payload.email,
+    };
+    (StatusCode::CREATED, Json(user))
+}
+
 // Handler for /users
 pub async fn list_users() -> Json<Vec<User>> {
     let users = vec![

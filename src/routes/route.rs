@@ -12,6 +12,7 @@ pub fn route(client: Arc<Client>) -> Router {
     Router::new()
         .route("/", get(|| async { "Hello, Rust!" }))
         .route("/create-user", post(controllers::create_user))
+        .route("/add-user", post(controllers::add_user))
         .route("/users", get(controllers::list_users))
         .route("/get-users", get(controllers::get_users))
         .route("/item/:id", get(controllers::show_item))
