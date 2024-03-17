@@ -39,7 +39,7 @@ pub async fn create_user() -> impl IntoResponse {
 }
 
 // Handler for add new user from json
-pub async fn add_user(Extension(arc_client): Extension<Arc<Client>>,Json(payload): Json<CreateUser>) -> (StatusCode, Json<User>) {
+pub async fn add_user(Extension(arc_client): Extension<Arc<Client>>,Json(payload): Json<CreateUser>) -> impl IntoResponse{
     let mycollection:Collection<Document> = arc_client.database("mydatabase").collection("mycollection");
     let user = User {
         id: 1337,
@@ -48,11 +48,11 @@ pub async fn add_user(Extension(arc_client): Extension<Arc<Client>>,Json(payload
     };
     let bson_value = match to_bson(&user){
         Ok(bson) => bson,
-        Err(_e) => return (StatusCode::UNPROCESSABLE_ENTITY, Json(user)),
+        Err(_e) => return (StatusCode::UNPROCESSABLE_ENTITY, Json(User::default())),
     };
     let doc = match bson_value {
         Bson::Document(doc) => doc,
-        _ => return (StatusCode::EXPECTATION_FAILED, Json(user)),
+        _ => return (StatusCode::EXPECTATION_FAILED, Json(User::default())),
     };
     mycollection.insert_one(doc, None).await.unwrap();
     (StatusCode::CREATED, Json(user))

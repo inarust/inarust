@@ -1,6 +1,6 @@
 use serde::{Serialize,Deserialize};
 
-#[derive(Serialize)]
+#[derive(Serialize,Default)]
 pub struct User {
     pub id: u64,
     pub name: String,
