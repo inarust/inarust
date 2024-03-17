@@ -46,10 +46,13 @@ pub async fn add_user(Extension(arc_client): Extension<Arc<Client>>,Json(payload
         name: payload.username,
         email: payload.email,
     };
-    let bson_value = to_bson(&user).expect("Failed to serialize user to BSON");
+    let bson_value = match to_bson(&user){
+        Ok(bson) => bson,
+        Err(_e) => return (StatusCode::UNPROCESSABLE_ENTITY, Json(user)),
+    };
     let doc = match bson_value {
         Bson::Document(doc) => doc,
-        _ => panic!("Expected a BSON document"),
+        _ => return (StatusCode::EXPECTATION_FAILED, Json(user)),
     };
     mycollection.insert_one(doc, None).await.unwrap();
     (StatusCode::CREATED, Json(user))
