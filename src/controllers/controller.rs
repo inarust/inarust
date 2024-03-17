@@ -7,7 +7,7 @@ use axum::{
     extract::{Path, Query,Extension},
     Json,
 };
-use mongodb::{Client,Collection, bson::Document,bson::doc};
+use mongodb::{Client,Collection, bson::{Bson,Document,doc,to_bson}};
 use crate::models::{User,Page,Userx, Item,CreateUser};
 
 pub async fn get_users(Extension(arc_client): Extension<Arc<Client>>)-> impl IntoResponse {
@@ -39,12 +39,19 @@ pub async fn create_user() -> impl IntoResponse {
 }
 
 // Handler for add new user from json
-pub async fn add_user(Json(payload): Json<CreateUser>) -> (StatusCode, Json<User>) {
+pub async fn add_user(Extension(arc_client): Extension<Arc<Client>>,Json(payload): Json<CreateUser>) -> (StatusCode, Json<User>) {
+    let mycollection:Collection<Document> = arc_client.database("mydatabase").collection("mycollection");
     let user = User {
         id: 1337,
         name: payload.username,
         email: payload.email,
     };
+    let bson_value = to_bson(&user).expect("Failed to serialize user to BSON");
+    let doc = match bson_value {
+        Bson::Document(doc) => doc,
+        _ => panic!("Expected a BSON document"),
+    };
+    mycollection.insert_one(doc, None).await.unwrap();
     (StatusCode::CREATED, Json(user))
 }
 
