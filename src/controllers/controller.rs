@@ -54,8 +54,10 @@ pub async fn add_user(Extension(arc_client): Extension<Arc<Client>>,Json(payload
         Bson::Document(doc) => doc,
         _ => return (StatusCode::EXPECTATION_FAILED, Json(User::default())),
     };
-    mycollection.insert_one(doc, None).await.unwrap();
-    (StatusCode::CREATED, Json(user))
+    match mycollection.insert_one(doc, None).await {
+        Ok(_) => (StatusCode::CREATED, Json(user)),
+        Err(_e) => return (StatusCode::INTERNAL_SERVER_ERROR, Json(User::default())),
+    }
 }
 
 // Handler for /users
